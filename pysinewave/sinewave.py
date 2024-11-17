@@ -10,13 +10,19 @@ class SineWave:
     '''Generates and plays a continuous sinewave, with smooth transitions in frequency (pitch)
         and amplitude (volume).'''
 
-    def __init__(self, pitch=0, pitch_per_second=12, decibels=0, decibels_per_second=1, channels=1, channel_side="lr",
-                samplerate=utilities.DEFAULT_SAMPLE_RATE):
-
+    def __init__(self, 
+                 pitch=None, pitch_per_second=12, 
+                 decibels=None, decibels_per_second=1, 
+                 frequency=None, amplitude=None,
+                 channels=1, channel_side="lr",
+                 samplerate=utilities.DEFAULT_SAMPLE_RATE):
+        
         self.sinewave_generator = sinewave_generator.SineWaveGenerator(
-                                    pitch=pitch, pitch_per_second=pitch_per_second,
-                                    decibels = decibels, decibels_per_second=decibels_per_second,
-                                    samplerate=samplerate)
+            pitch=pitch, pitch_per_second=pitch_per_second,
+            decibels = decibels, decibels_per_second=decibels_per_second,
+            frequency=frequency, amplitude=amplitude,
+            samplerate=samplerate,
+        )
 
         # Create the output stream
         self.output_stream = sd.OutputStream(channels=channels, callback= lambda *args: self._callback(*args), 
@@ -45,8 +51,6 @@ class SineWave:
             outdata[:, self.channel_side] = 0.0
             
 
-
-
     def play(self):
         '''Plays the sinewave (in a separate thread). Changes in frequency or amplitude will transition smoothly.'''
         self.output_stream.start()
@@ -63,7 +67,12 @@ class SineWave:
         '''Sets the goal pitch of the sinewave (relative to middle C), 
         which will be smoothly transitioned to.'''
         self.sinewave_generator.set_pitch(pitch)
-    
+
+    def set_amplitude(self, amplitude):
+        '''Sets the goal amplitude of the sinewave, which will be smoothly transitioned to.'''
+        self.sinewave_generator.set_amplitude(amplitude)
+
     def set_volume(self, volume):
         '''Sets the goal volume (in decibels, relative to medium volume) of the sinewave'''
         self.sinewave_generator.set_decibels(volume)
+        
