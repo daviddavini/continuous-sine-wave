@@ -7,11 +7,27 @@ class SineWaveGenerator:
     (For simplicity, use SineWave instead. 
     SineWaveGenerator is included to allow for alternative uses of generated sinewave data.)'''
 
-    def __init__(self, pitch, pitch_per_second=12, decibels=1, decibels_per_second=1, 
-                samplerate=utilities.DEFAULT_SAMPLE_RATE):
-        self.frequency = utilities.pitch_to_frequency(pitch)
+    def __init__(self, 
+                 pitch, pitch_per_second=12, 
+                 decibels=1, decibels_per_second=1, 
+                 frequency=None, amplitude=None,
+                 samplerate=utilities.DEFAULT_SAMPLE_RATE):
+        
+        if frequency is None:
+            self.frequency = utilities.pitch_to_frequency(pitch)
+        else:
+            if pitch is not None:
+                print('Warning: Both pitch and frequency were given. Using frequency.')
+            self.frequency = frequency
+        
+        if amplitude is None:
+            self.amplitude = utilities.decibels_to_amplitude_ratio(decibels)
+        else:
+            if decibels is not None:
+                print('Warning: Both decibels and amplitude were given. Using amplitude.')
+            self.amplitude = amplitude
+        
         self.phase = 0
-        self.amplitude = utilities.decibels_to_amplitude_ratio(decibels)
 
         self.pitch_per_second = pitch_per_second
         self.decibels_per_second = decibels_per_second
