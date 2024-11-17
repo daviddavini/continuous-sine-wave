@@ -2,6 +2,10 @@ import numpy as np
 
 from pysinewave import utilities
 
+DEFAULT_PITCH = 0
+DEFAULT_DECIBELS = 0
+
+
 class SineWaveGenerator:
     '''Generates continuous sine wave data that smoothly transitions between pitches and volumes. 
     (For simplicity, use SineWave instead. 
@@ -9,24 +13,30 @@ class SineWaveGenerator:
 
     def __init__(self, 
                  pitch, pitch_per_second=12, 
-                 decibels=1, decibels_per_second=1, 
+                 decibels=None, decibels_per_second=1, 
                  frequency=None, amplitude=None,
                  samplerate=utilities.DEFAULT_SAMPLE_RATE):
         
-        if frequency is None:
+        if pitch is None:
+            if frequency is None:
+                self.frequency = utilities.pitch_to_frequency(DEFAULT_PITCH)
+            else:
+                self.frequency = frequency
+        else:
             self.frequency = utilities.pitch_to_frequency(pitch)
-        else:
-            if pitch is not None:
-                print('Warning: Both pitch and frequency were given. Using frequency.')
-            self.frequency = frequency
+            if frequency is not None:
+                print('Warning: Both pitch and frequency were given. Using pitch.')
         
-        if amplitude is None:
+        if decibels is None:
+            if amplitude is None:
+                self.amplitude = utilities.decibels_to_amplitude_ratio(DEFAULT_DECIBELS)
+            else:
+                self.amplitude = amplitude
+        else:
             self.amplitude = utilities.decibels_to_amplitude_ratio(decibels)
-        else:
-            if decibels is not None:
-                print('Warning: Both decibels and amplitude were given. Using amplitude.')
-            self.amplitude = amplitude
-        
+            if amplitude is not None:
+                print('Warning: Both decibels and amplitude were given. Using decibels.')
+
         self.phase = 0
 
         self.pitch_per_second = pitch_per_second

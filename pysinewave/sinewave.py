@@ -11,8 +11,8 @@ class SineWave:
         and amplitude (volume).'''
 
     def __init__(self, 
-                 pitch=0, pitch_per_second=12, 
-                 decibels=0, decibels_per_second=1, 
+                 pitch=None, pitch_per_second=12, 
+                 decibels=None, decibels_per_second=1, 
                  frequency=None, amplitude=None,
                  channels=1, channel_side="lr",
                  samplerate=utilities.DEFAULT_SAMPLE_RATE):
